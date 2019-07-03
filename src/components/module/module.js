@@ -7,6 +7,7 @@ export default class SpecialVersionModule {
         this.settings = settings;
         this.textNodes= nodeList;
         this.value = window.localStorage.getItem(this.settings.cacheName);
+        this.buttons = [];
         this.init();
         if(this.value){
             this.setStyle();
@@ -74,9 +75,12 @@ export default class SpecialVersionModule {
                 button.classList.add('state_active');
             }
             this.bindEvent(button,param);
+            button.setAttribute('data-value', param.value);
             innerGroup.appendChild(button);
+            this.buttons.push(button);
         }
         this.group.appendChild(innerGroup);
+        this.afterUiCreated();
         return this.group;
     }
     bindEvent(button,param){
@@ -90,6 +94,9 @@ export default class SpecialVersionModule {
     callback(value){
         this.setSizeStyle(value)
     }
+    afterUiCreated(){
+        return false;
+    }
     setSizeStyle(value){
         if(value.styleSheet){
             if(!this.sizeStyes){
@@ -100,3 +107,5 @@ export default class SpecialVersionModule {
         }
     }
 }
+
+module.exports = SpecialVersionModule;

@@ -118,3 +118,4 @@ export default class PluginSpeechSystem extends Module{
 }
 
 
+module.exports = PluginSpeechSystem;
