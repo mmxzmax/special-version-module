@@ -12,7 +12,8 @@ import ImagesService from './components/ImagesService/imagesService';
 import PluginSpeechSystem from './components/TextReadService/textReadService';
 
 
-class SpecialVersion {
+
+export default class SpecialVersion {
   constructor(switchButtonElement,services,lng){
     this.services = [
       FontSizeService,
@@ -298,5 +299,3 @@ class SpecialVersion {
   }
 
 }
-
-export default SpecialVersion;
