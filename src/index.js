@@ -13,7 +13,7 @@ import PluginSpeechSystem from './components/TextReadService/textReadService';
 
 
 
-export default class SpecialVersion {
+class SpecialVersion {
   constructor(switchButtonElement,services,lng){
     this.services = [
       FontSizeService,
@@ -299,3 +299,5 @@ export default class SpecialVersion {
   }
 
 }
+
+module.exports = SpecialVersion;
