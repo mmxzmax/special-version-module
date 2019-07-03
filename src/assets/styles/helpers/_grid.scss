@@ -1,0 +1,320 @@
+$columns: 12;
+$atom: (100% / $columns);
+$container: 1248px;
+
+$break_hd: 1920px;
+$break_xl: 1440px;
+$break_lg: 1280px;
+$break_md: 1024px;
+$break_sm: 768px;
+
+$offset_hd: 36px;
+$offset_xl: 36px;
+$offset_lg: 36px;
+$offset_md: 64px;
+$offset_sm: 60px;
+$offset_xs: 20px;
+
+$offset_hd_one_side: ($offset_hd / 2);
+$offset_xl_one_side: ($offset_xl / 2);
+$offset_lg_one_side: ($offset_lg / 2);
+$offset_md_one_side: ($offset_md / 2);
+$offset_sm_one_side: ($offset_sm / 2);
+$offset_xs_one_side: ($offset_xs / 2);
+
+$fields: 18px;
+$fields_xl: 18px;
+$fields_lg: 18px;
+$fields_md: 32px;
+$fields_sm: 30px;
+$fields_xs: 10px;
+
+@mixin container-full() {
+  @include xs-block() {
+    padding-left: $fields_xs;
+    padding-right: $fields_xs;
+  }
+  @include sm-block() {
+    padding-left: $fields_sm;
+    padding-right: $fields_sm;
+  }
+  @include md-block() {
+    padding-left: $fields_md;
+    padding-right: $fields_md;
+  }
+  @include lg-block() {
+    padding-left: $fields_lg;
+    padding-right: $fields_lg;
+  }
+  @include xl-block() {
+    padding-left: $fields_xl;
+    padding-right: $fields_xl;
+  }
+  @include hd-block() {
+    padding-left: $fields;
+    padding-right: $fields;
+  }
+}
+
+@mixin row-offsets() {
+  @include xs-block() {
+    margin-left: ($offset_xs_one_side * -1);
+    margin-right: ($offset_xs_one_side * -1);
+  }
+  @include sm-block() {
+    margin-left: ($offset_sm_one_side * -1);
+    margin-right: ($offset_sm_one_side * -1);
+  }
+  @include md-block() {
+    margin-left: ($offset_md_one_side * -1);
+    margin-right: ($offset_md_one_side * -1);
+  }
+  @include lg-block() {
+    margin-left: ($offset_lg_one_side * -1);
+    margin-right: ($offset_lg_one_side * -1);
+  }
+  @include xl-block() {
+    margin-left: ($offset_xl_one_side * -1);
+    margin-right: ($offset_xl_one_side * -1);
+  }
+  @include hd-block() {
+    margin-left: ($offset_hd_one_side * -1);
+    margin-right: ($offset_hd_one_side * -1);
+  }
+}
+
+@mixin col-offsets($type) {
+  @include xs-block() {
+    #{$type}-left: $offset_xs_one_side;
+    #{$type}-right: $offset_xs_one_side;
+  }
+  @include sm-block() {
+    #{$type}-left: $offset_sm_one_side;
+    #{$type}-right: $offset_sm_one_side;
+  }
+  @include md-block() {
+    #{$type}-left: $offset_md_one_side;
+    #{$type}-right: $offset_md_one_side;
+  }
+  @include lg-block() {
+    #{$type}-left: $offset_lg_one_side;
+    #{$type}-right: $offset_lg_one_side;
+  }
+  @include xl-block() {
+    #{$type}-left: $offset_xl_one_side;
+    #{$type}-right: $offset_xl_one_side;
+  }
+  @include hd-block() {
+    #{$type}-left: $offset_hd_one_side;
+    #{$type}-right: $offset_hd_one_side;
+  }
+}
+
+@mixin container() {
+  margin: 0 auto;
+  max-width: $container;
+  @include container-full();
+}
+
+@mixin row-flex() {
+  display: flex;
+  flex-wrap: wrap;
+  @include row-offsets();
+}
+
+@mixin col() {
+  @include col-offsets(margin);
+}
+
+@mixin col-padding() {
+  @include col-offsets(padding);
+}
+
+@mixin size($n) {
+  $val: 100% / $columns * $n;
+
+  @include xs-block() {
+    width: #{$val};
+  }
+  @include sm-block() {
+    width: #{$val};
+  }
+  @include md-block() {
+    width: #{$val};
+  }
+  @include lg-block() {
+    width: #{$val};
+  }
+  @include xl-block() {
+    width: #{$val};
+  }
+  @include hd-block() {
+    width: #{$val};
+  }
+}
+
+@mixin size-hd($n) {
+  $val: 100% / $columns * $n;
+  @include hd(width, #{$val});
+}
+@mixin size-xl($n) {
+  $val: 100% / $columns * $n;
+  @include xl(width, #{$val});
+}
+@mixin size-lg($n) {
+  $val: 100% / $columns * $n;
+  @include lg(width, #{$val});
+}
+@mixin size-md($n) {
+  $val: 100% / $columns * $n;
+  @include md(width, #{$val});
+}
+@mixin size-sm($n) {
+  $val: 100% / $columns * $n;
+  @include sm(width, #{$val});
+}
+@mixin size-xs($n) {
+  $val: 100% / $columns * $n;
+  @include xs(width, #{$val});
+}
+
+// complete
+@mixin hd($name, $value) {
+  @media screen and (min-width: $break_hd){
+    #{$name}: $value;
+  }
+}
+@mixin hd-block() {
+  @media screen and (min-width: $break_hd) {
+    @content;
+  }
+}
+@mixin xl($name, $value) {
+  @media screen and (min-width: $break_xl) and (max-width: $break_hd - 1) {
+    #{$name}: $value;
+  }
+}
+@mixin xl-block() {
+  @media screen and (min-width: $break_xl) and (max-width: $break_hd - 1) {
+    @content;
+  }
+}
+@mixin lg($name, $value) {
+  @media screen and (min-width: $break_lg) and (max-width: $break_xl - 1) {
+    #{$name}: $value;
+  }
+}
+@mixin lg-block() {
+  @media screen and (min-width: $break_lg) and (max-width: $break_xl - 1) {
+    @content;
+  }
+}
+@mixin md($name, $value) {
+  @media screen and (min-width: $break_md) and (max-width: $break_lg - 1) {
+    #{$name}: $value;
+  }
+}
+@mixin md-block() {
+  @media screen and (min-width: $break_md) and (max-width: $break_lg - 1) {
+    @content;
+  }
+}
+@mixin sm($name, $value) {
+  @media screen and (min-width: $break_sm) and (max-width: $break_md - 1) {
+    #{$name}: $value;
+  }
+}
+@mixin sm-block() {
+  @media screen and (min-width: $break_sm) and (max-width: $break_md - 1) {
+    @content;
+  }
+}
+@mixin xs($name, $value) {
+  @media screen and (max-width: $break_sm - 1) {
+    #{$name}: $value;
+  }
+}
+@mixin xs-block() {
+  @media screen and (max-width: $break_sm - 1) {
+    @content;
+  }
+}
+
+@mixin xs($name, $value) {
+  @media screen and (max-width: $break_sm - 1) {
+    #{$name}: $value;
+  }
+}
+@mixin xs-block() {
+  @media screen and (max-width: $break_sm - 1) {
+    @content;
+  }
+}
+
+@mixin from($min_width) {
+  @media screen and (min-width: $min_width) {
+    @content;
+  }
+}
+@mixin from-sm() {
+  @media screen and (min-width: $break_sm) {
+    @content;
+  }
+}
+@mixin from-md() {
+  @media screen and (min-width: $break_md) {
+    @content;
+  }
+}
+@mixin from-lg() {
+  @media screen and (min-width: $break_lg) {
+    @content;
+  }
+}
+@mixin from-xl() {
+  @media screen and (min-width: $break_xl) {
+    @content;
+  }
+}
+@mixin from-hd() {
+  @media screen and (min-width: $break_hd) {
+    @content;
+  }
+}
+
+@mixin to($max_width) {
+  @media screen and (max-width: $max_width) {
+    @content;
+  }
+}
+@mixin to-sm() {
+  @media screen and (max-width: $break_sm - 1px) {
+    @content;
+  }
+}
+@mixin to-md() {
+  @media screen and (max-width: $break_md - 1px) {
+    @content;
+  }
+}
+@mixin to-lg() {
+  @media screen and (max-width: $break_lg - 1px) {
+    @content;
+  }
+}
+@mixin to-xl() {
+  @media screen and (max-width: $break_xl - 1px) {
+    @content;
+  }
+}
+@mixin to-hd() {
+  @media screen and (max-width: $break_hd - 1px) {
+    @content;
+  }
+}
+
+@mixin from-to($min_width, $max_width) {
+  @media screen and (min-width: $min_width) and (max-width: $max_width) {
+    @content;
+  }
+}

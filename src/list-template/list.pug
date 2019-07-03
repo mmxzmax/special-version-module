@@ -1,0 +1,19 @@
+include ../../node_modules/bempug/index
+    - BEMPUG.modifier = '_';
+
+
+
+doctype html
+html
+    include ./../blocks/head/head
+    |<style>
+    |  .header{background: #000; padding:30px; color: #fff; font-Weight:bold;}.list{padding:30px; list-style: circle;}
+    |</style>
+    body
+        +b('header',{},'header')
+            | Cписок страниц
+
+        +b('list',{},'ul')
+            each item in linkslist
+                +e('item')
+                    +e('link',{},'a')(href=item.link target="_blank")= item.title
