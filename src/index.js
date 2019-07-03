@@ -299,4 +299,4 @@ class SpecialVersion {
 
 }
 
-exports.SpecialVersion = SpecialVersion;
+module.exports = SpecialVersion;

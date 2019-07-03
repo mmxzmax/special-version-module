@@ -60,5 +60,5 @@
     "normalize-scss": "^7.0.1",
     "promise-polyfill": "^8.1.3"
   },
-  "main": "./dist/main.js"
+  "main": "src/index.js"
 }
