@@ -26,3 +26,5 @@ export default class FontKerningService extends Module{
         }
     }
 }
+
+module.exports = FontKerningService;

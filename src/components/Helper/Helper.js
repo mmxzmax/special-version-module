@@ -178,3 +178,5 @@ export default class Helper {
         return styleSheet;
     }
 }
+
+module.exports = Helper;

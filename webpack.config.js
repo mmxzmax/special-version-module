@@ -185,7 +185,14 @@ module.exports = {
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
-  plugins: plugins
+  plugins: plugins,
+  output: {
+    path: __dirname + '/lib',
+    filename: 'special-version.js',
+    library: 'special-version',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
+  },
 };
 
 

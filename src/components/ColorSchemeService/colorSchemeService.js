@@ -3,10 +3,22 @@ import Module from './../module/module';
 export default class ColorSchemeService extends Module {
     constructor(textNodes, settings){
         super(textNodes, settings);
+
     }
     processNodes(params) {
         super.processNodes(params);
         this.setScheme(params);
+    }
+    afterUiCreated() {
+        this.processButtons(this.buttons);
+    }
+    processButtons(buttons){
+        for(let i=0; i<buttons.length; i++){
+            const currentButton = buttons[i];
+            const value =currentButton.getAttribute('data-value');
+            currentButton.style.setProperty('background-color', this.settings.scheme[value][0], 'important');
+            currentButton.style.setProperty('color', this.settings.scheme[value][1], 'important');
+        }
     }
     setScheme(id){
         const self = this;
@@ -46,3 +58,5 @@ export default class ColorSchemeService extends Module {
         }
     }
 }
+
+module.exports = ColorSchemeService;

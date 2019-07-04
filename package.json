@@ -1,6 +1,6 @@
 {
   "name": "special-version-module",
-  "version": "2.4.7",
+  "version": "2.5.0",
   "description": "",
   "scripts": {
     "dev": "webpack --mode development",
@@ -19,6 +19,7 @@
     "autoprefixer": "^9.4.3",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
+    "babel-plugin-add-module-exports": "^1.0.2",
     "babel-preset-env": "^1.7.0",
     "bempug": "^1.1.1",
     "copy-webpack-plugin": "^4.6.0",
@@ -60,5 +61,5 @@
     "normalize-scss": "^7.0.1",
     "promise-polyfill": "^8.1.3"
   },
-  "main": "dist/main.js"
+  "main": "lib/special-version.js"
 }

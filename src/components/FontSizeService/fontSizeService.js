@@ -35,3 +35,5 @@ export default class FontSizeService extends Module {
     }
 
 }
+
+module.exports = FontSizeService;
