@@ -61,20 +61,24 @@ export default class ImagesService extends Module{
         }
     }
     changeImg(value) {
+      try {
         let val;
         if(value.value){
-            val = value.value;
+          val = value.value;
         } else {
-            val = value;
+          val = value;
         }
         if(parseInt(val) === 2){
-            this.hideImages();
+          this.hideImages();
         } else if(parseInt(val) === 3){
-            this.showImages();
-            this.setToMonochrome();
+          this.showImages();
+          this.setToMonochrome();
         } else {
-            this.showImages();
+          this.showImages();
         }
+      } catch (e) {
+        console.warn(e);
+      }
     }
   processNodes(params) {
     super.processNodes(params);

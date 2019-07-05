@@ -26,31 +26,11 @@ export default class Application {
                 if(!this.nodes){
                     Helper.getNodes().then(nodes => {
                         this.nodes = nodes;
-                        this.initServices();
-                        if(!this.uiBlock){
-                            this.init();
-                        }
-                        document.body.classList.remove('special-version-loading');
-                        try{
-                            this.services['textReadService'].playText(this.lng.specialVersionOn);
-                        } catch (e) {
-
-                        }
-                        this.watcher();
+                        this.start();
                     });
                 } else {
                     this.ready = false;
-                    this.initServices();
-                    if(!this.uiBlock){
-                        this.init();
-                    }
-                    document.body.classList.remove('special-version-loading');
-                    try{
-                        this.services['textReadService'].playText(this.lng.specialVersionOn);
-                    } catch (e) {
-
-                    }
-                    this.watcher();
+                    this.start();
                 }
             },false);
         }
@@ -58,12 +38,20 @@ export default class Application {
             document.body.classList.add('special-version-loading');
              Helper.getNodes().then(nodes => {
                 this.nodes = nodes;
-                this.initServices();
-                this.init();
-                 document.body.classList.remove('special-version-loading');
-                 this.watcher();
+               this.start();
             });
         }
+    }
+    start(){
+      this.initServices();
+      if(!this.uiBlock){
+        this.init();
+      }
+      document.body.classList.remove('special-version-loading');
+      try{
+        this.services['textReadService'].playText(this.lng.specialVersionOn);
+      } catch (e) {}
+      this.watcher();
     }
     initServices(){
         window.localStorage.setItem('specialVersion','on');
