@@ -31,10 +31,10 @@ then init the version with button class param
 
 ```javascript
 
-const version = new SpecialVersion('.js-version',settings,lng)
+const version = new SpecialVersion('.js-version',settings,lng,customCss)
 
 ```
- param settings and lng is not required
+ param settings, lng and customCss is not required
 
 add custom settings:
 
@@ -294,3 +294,5 @@ default lng settings
     };
 
 ```
+
+to change styles add cssString to last Attribute of constructor "customCss"
