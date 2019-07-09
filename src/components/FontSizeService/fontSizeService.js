@@ -9,6 +9,17 @@ export default class FontSizeService extends Module {
         super.processNodes(params);
         this.changeFontSize(params);
     }
+    afterUiCreated() {
+      this.processButtons(this.buttons);
+    }
+    processButtons(buttons){
+      for(let i=0; i<buttons.length; i++){
+        const currentButton = buttons[i];
+        const value = currentButton.getAttribute('data-value');
+        let fontSize = Helper.getCurStyle(currentButton);
+        currentButton.style.setProperty('font-size', fontSize*value+'px', 'important');
+      }
+    }
     changeFontSize(stepPercent){
         changeFontSize(this.textNodes);
         changeFontSize(this.textNodes,stepPercent);
@@ -16,8 +27,7 @@ export default class FontSizeService extends Module {
             for(let i=0;i<textNodes.length;i++){
                 let elem=textNodes[i];
                 Helper.setToParent(elem,'fontSize','',true);
-                let elemStyle=Helper.getStyle(elem);
-                let fontSize=parseInt(String(elem.style.fontSize? elem.style.fontSize : elemStyle.fontSize).replace('px',''));
+                let fontSize=Helper.getCurStyle(elem);
                 elem.style.transition = 'none';
                 if(!stepPercent){
                     elem.style.fontSize='';

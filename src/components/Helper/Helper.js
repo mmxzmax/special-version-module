@@ -104,6 +104,12 @@ export default class Helper {
     static getStyle(element){
         return  window.getComputedStyle(element, null) || element.currentStyle;
     }
+    static getCurStyle(elem){
+      const ELEMSTYLE = Helper.getStyle(elem);
+      const CURRENTFONTSIZE = elem.style.fontSize? elem.style.fontSize : ELEMSTYLE.fontSize;
+      const FONTSIZE = CURRENTFONTSIZE? CURRENTFONTSIZE : 14;
+      return parseInt(String(FONTSIZE).replace('px',''));
+    }
     static setToParent(element,propretyName,value,noDelay){
         if(element.parentNode!==document.body){
             if(!noDelay){
