@@ -1,4 +1,5 @@
 import Module from './../module/module';
+import TtsService from './TtsService';
 
 
 
@@ -13,10 +14,12 @@ export default class PluginSpeechSystem extends Module{
         this.msg = null;
         this.synth = null;
         this.progress = 0;
+        this.hasSpeech = true;
         if('speechSynthesis' in window) {
-            this.hasSpeech = true;
             this.synth = window.speechSynthesis;
             this.initService();
+        } else {
+            this.synth = new TtsService(this.settings.lngCode,this.settings.ttsApiKey);
         }
     }
     initService(){
@@ -85,32 +88,39 @@ export default class PluginSpeechSystem extends Module{
     }
 
     playText(text,callback){
-      this.progress = 0;
-      this.synth.cancel();
-      const SELF = this;
-      const playlist = PluginSpeechSystem.processStr(text);
-      if(this.enabled){
-        this.playPart(playlist);
-        this.msg.customCallback = callback;
-        this.msg.onend = function() {
-          if(playlist.length > SELF.progress){
+      try{
+        this.progress = 0;
+        this.synth.cancel();
+        const SELF = this;
+        const playlist = PluginSpeechSystem.processStr(text);
+        if(this.enabled){
+          this.playPart(playlist);
+          this.msg.customCallback = callback;
+          this.msg.onend = function() {
+            if(playlist.length > SELF.progress){
               SELF.progress++;
               SELF.playPart(playlist);
-          } else {
-            if(SELF.msg.customCallback){
-              SELF.msg.customCallback();
+            } else {
+              if(SELF.msg.customCallback){
+                SELF.msg.customCallback();
+              }
             }
-          }
-        };
+          };
 
-      }
-      if(!SELF.msg){
-        const TIMER = setInterval(()=>{
-          if(SELF.msg){
-            SELF.playText(text,callback);
-            clearInterval(TIMER);
-          }
-        },250);
+        }
+        if(!SELF.msg){
+          const TIMER = setInterval(()=>{
+            if(SELF.msg){
+              SELF.playText(text,callback);
+              clearInterval(TIMER);
+            }
+          },250);
+        }
+      } catch (e) {
+        this.synth.play(text);
+        this.synth.player.addEventListener('ended',()=>{
+          callback();
+        },false);
       }
     }
 
