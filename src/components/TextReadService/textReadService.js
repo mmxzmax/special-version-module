@@ -30,7 +30,6 @@ export default class PluginSpeechSystem extends Module{
       },250);
     }
     getvoices(){
-      const SELF =this;
       const VOICES = this.synth.getVoices();
       for(let i = 0; i < VOICES.length ; i++) {
         const LANG = new RegExp(this.settings.lngCode,'g');
@@ -116,8 +115,10 @@ export default class PluginSpeechSystem extends Module{
     }
 
     playPart(playlist){
-      this.msg.text = playlist[this.progress] ? playlist[this.progress] : '';
-      this.synth.speak(this.msg);
+      const MSG = new window.SpeechSynthesisUtterance();
+      MSG.voice = this.msg.voice;
+      MSG.text = playlist[this.progress] ? playlist[this.progress] : '';
+      this.synth.speak(MSG);
     }
 
     static processStr(text){
