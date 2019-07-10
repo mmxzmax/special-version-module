@@ -1,6 +1,6 @@
 {
   "name": "special-version-module",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "",
   "scripts": {
     "dev": "webpack --mode development",
