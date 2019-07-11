@@ -61,7 +61,7 @@
     "normalize-scss": "^7.0.1",
     "promise-polyfill": "^8.1.3"
   },
-  "main": "lib/special-version.js",
+  "main": "docs/lib.bundle.js",
   "keywords": [
     "for weak-eyed",
     "visually impaired",

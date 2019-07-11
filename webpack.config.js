@@ -191,7 +191,7 @@ module.exports = {
     page:'./pg/index.js',
   },
   output: {
-    path: __dirname + '/lib',
+    path: __dirname + '/docs',
     filename: '[name].bundle.js',
     libraryTarget: 'umd',
     umdNamedDefine: true
