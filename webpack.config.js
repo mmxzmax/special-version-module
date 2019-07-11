@@ -61,7 +61,7 @@ plugins.push( new ServiceWorkerWebpackPlugin({
 
 module.exports = {
   devServer: {
-    host: 'localhost',
+    host: '0.0.0.0',
     port: '9900',
     disableHostCheck: true,
     open: false,
@@ -186,10 +186,13 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
   plugins: plugins,
+  entry: {
+    lib:'./src/index.js',
+    page:'./pg/index.js',
+  },
   output: {
     path: __dirname + '/lib',
-    filename: 'special-version.js',
-    library: 'special-version',
+    filename: '[name].bundle.js',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },

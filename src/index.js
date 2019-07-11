@@ -1,6 +1,4 @@
-
-
-import css from '!!to-string-loader!css-loader!sass-loader!./assets/styles/main.scss';
+import css from '!!to-string-loader!css-loader!sass-loader!./assets/styles/lib.scss';
 
 import Application from './components/app/app';
 import FontSizeService from './components/FontSizeService/fontSizeService';
@@ -270,7 +268,8 @@ class SpecialVersion {
       specialVersionOn: 'special version on',
       standardVersion: 'special version off',
       closeAdditional: 'close advanced settings',
-      additionalSettings: 'advanced settings'
+      additionalSettings: 'advanced settings',
+      initText:'special version init'
     };
     this.connectServiceClasses(serviceList);
     this.init(customCss? customCss : specialVerCss,serviceList,lngSettings,switchButtonElement);

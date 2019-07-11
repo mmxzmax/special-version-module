@@ -287,12 +287,13 @@ default settings:
 ```
 default lng settings
 ```javascript
-    {
-      specialVersionOn: 'Включаю версию для слабовидящих',// text will be played on switch on version
-      standardVersion: 'переходим в обычную версию сайта',// text will be played on switch off version
-      closeAdditional: 'Закрыть дополнительные настройки',// text will be played on close advanced settings
-      additionalSettings: 'дополнительные настройки' // text will be played on entering advanced settings
-    };
+   {
+         specialVersionOn: 'special version on',
+         standardVersion: 'special version off',
+         closeAdditional: 'close advanced settings',
+         additionalSettings: 'advanced settings',
+         initText:'special version init'
+}
 
 ```
 

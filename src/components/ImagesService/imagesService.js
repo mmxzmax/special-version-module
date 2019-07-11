@@ -23,7 +23,7 @@ export default class ImagesService extends Module{
         for(let i=0;i<imgNodes.length;i++){
             const element = imgNodes[i];
             const styleString  =String(element.getAttribute('style'));
-            const pos = !(styleString.indexOf('background-image') + 1);
+            const pos = !(styleString.indexOf('url(') + 1);
             if(!pos){
                 resultArr.push(element);
             }
