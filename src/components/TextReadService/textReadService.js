@@ -15,11 +15,17 @@ export default class PluginSpeechSystem extends Module{
         this.synth = null;
         this.progress = 0;
         this.hasSpeech = true;
+        this.isNativeApi = false;
         if('speechSynthesis' in window) {
+            this.isNativeApi = true;
             this.synth = window.speechSynthesis;
             this.initService();
         } else {
-            this.synth = new TtsService(this.settings.lngCode,this.settings.ttsApiKey);
+          console.log(this.settings);
+            this.synth = new TtsService(
+              this.settings.api,
+              this.settings.lngCode,
+              this.settings.lngCodes);
         }
     }
     initService(){
@@ -88,58 +94,50 @@ export default class PluginSpeechSystem extends Module{
     }
 
     playText(text,callback){
-      try{
-        this.progress = 0;
-        this.synth.cancel();
-        const SELF = this;
-        const playlist = PluginSpeechSystem.processStr(text);
-        if(this.enabled){
-          this.playPart(playlist);
-          this.msg.customCallback = callback;
-          this.msg.onend = function() {
-            if(playlist.length > SELF.progress){
-              SELF.progress++;
-              SELF.playPart(playlist);
-            } else {
-              if(SELF.msg.customCallback){
-                SELF.msg.customCallback();
-              }
-            }
-          };
-
-        }
-        if(!SELF.msg){
-          const TIMER = setInterval(()=>{
-            if(SELF.msg){
-              SELF.playText(text,callback);
-              clearInterval(TIMER);
-            }
-          },250);
-        }
-      } catch (e) {
-        this.synth.play(text);
-        this.synth.player.addEventListener('ended',()=>{
-          callback();
-        },false);
-      }
-    }
-
-    playPart(playlist){
-      const MSG = new window.SpeechSynthesisUtterance();
-      MSG.voice = this.msg.voice;
-      MSG.text = playlist[this.progress] ? playlist[this.progress] : '';
-      this.synth.speak(MSG);
-    }
-
-    static processStr(text){
-      let parts;
-      if(text.length>100){
-        parts = text.match(/[\s\S]{1,100}/g) || [];
+      if(this.isNativeApi){
+        this.playNative(text,callback);
       } else {
-        parts = [];
-        parts.push(text);
+        this.playByTts(text,callback);
       }
-      return parts;
+    }
+
+    playNative(text,callback){
+      this.msg = this.getvoices();
+      this.progress = 0;
+      this.synth.cancel();
+      const SELF = this;
+      if(this.enabled){
+        this.msg.text = text? text : '';
+        this.synth.speak(this.msg);
+        this.msg.customCallback = callback;
+        this.msg.onend = function() {
+          if(SELF.msg.customCallback){
+            SELF.msg.customCallback();
+          }
+        };
+        const REPEATER = setInterval(function () {
+          console.log(SELF.synth.speaking);
+          if (!SELF.synth.speaking) clearInterval(REPEATER);
+          else SELF.synth.resume();
+        }, 14000);
+      }
+      if(!SELF.msg){
+        const TIMER = setInterval(()=>{
+          if(SELF.msg){
+            SELF.playText(text,callback);
+            clearInterval(TIMER);
+          }
+        },250);
+      }
+    }
+
+    playByTts(text,callback){
+      if(this.enabled) {
+        this.synth.play(text);
+        this.synth.player.addEventListener('ended', () => {
+          callback();
+        }, false);
+      }
     }
 
     getSelectionHtml() {
