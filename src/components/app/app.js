@@ -1,5 +1,4 @@
 import Helper from './../Helper/Helper';
-import Promise from 'promise-polyfill';
 
 
 export default class Application {
@@ -10,8 +9,6 @@ export default class Application {
         const specialVersion = window.localStorage.getItem('specialVersion');
         this.ready = false;
         this.services = {};
-        this.addedNodes = [];
-        this.watcherTimer = null;
         document.body.setAttribute('data-version-loading-text',lng.initText? lng.initText: '');
         const specialVersionButton = document.body.querySelectorAll(switchButtonElement? switchButtonElement : '.js-special-version');
         for(let i = 0; i<specialVersionButton.length; i++){
@@ -45,7 +42,6 @@ export default class Application {
       try{
         this.services['textReadService'].playText(this.lng.specialVersionOn);
       } catch (e) {}
-      this.watcher();
     }
     initServices(){
         window.localStorage.setItem('specialVersion','on');
@@ -71,92 +67,8 @@ export default class Application {
     }
     init(){
         document.body.classList.add('special-version-on');
-        this.uiBlock = Application._createUiBlock();
+        this.uiBlock = Helper.createUiBlock();
         this._createUi();
-    }
-    watcher(){
-        const self = this;
-        try{
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if(mutation.addedNodes.length){
-                        Helper.cleanNodes(mutation.addedNodes).then((nodes)=>{
-                            for(let i = 0; i < nodes.length; i++){
-                                const newNode = nodes[i];
-                                self.addedNodes.push(newNode);
-                            }
-                            clearTimeout(self.watcherTimer);
-                            self.watcherTimer = setTimeout(()=>{
-                                self.updateOnWatchEvent();
-                            },100)
-                        });
-                    }
-                    if(mutation.removedNodes.length){
-                        self.cleanNodesList(mutation.removedNodes).then(()=>{
-                            clearTimeout(self.watcherTimer);
-                            self.watcherTimer = setTimeout(()=>{
-                                self.updateOnWatchEvent();
-                            },100)
-                        })
-                    }
-                });
-            });
-            const config = { attributes: false, childList: true, characterData: false,  subtree: true };
-            observer.observe(document.body, config);
-        } catch (e) {
-            console.error('no watcher detect the version do not watch the dom changes')
-        }
-
-    }
-    updateOnWatchEvent(){
-        const self = this;
-        for(let i = 0; i < self.addedNodes.length; i++){
-            const newNode = self.addedNodes[i];
-            self.nodes.push(newNode);
-        }
-        self.addedNodes = [];
-        Object.keys(self.services).forEach((key)=>{
-            let service = self.services[key];
-            service.processNodes(localStorage.getItem(service.settings.cacheName));
-        });
-        console.log(self.nodes.length);
-    }
-    cleanNodesList(removedNodes){
-        const self = this;
-        return new Promise((resolve, reject)=>{
-            let iterrator = 0;
-            let i = 0;
-            const timer = setInterval(()=>{
-                for (i = iterrator; i < iterrator + 10 ; i++) {//добавляем элементы dom к массиву
-                    if(i<self.nodes.length){
-                        for(let j=0;j<removedNodes.length;j++){
-                            const removedNode = removedNodes[j];
-                            if(self.nodes[i] === removedNode){
-                                self.nodes.splice(i, 1);
-                                i--;
-                            }
-
-                        }
-                    }
-                }
-                if(iterrator < self.nodes.length
-                ){
-                    iterrator = i;
-                } else {
-                    clearInterval(timer);
-                    resolve();
-                }
-            },10);
-        });
-
-    }
-    static _createUiBlock(){
-        const position = document.body.firstChild;
-        const uiBlock = document.createElement('div');
-        uiBlock.classList.add('special-version');
-        uiBlock.classList.add('special-version__ignore');
-        document.body.insertBefore(uiBlock,position);
-        return uiBlock;
     }
     _createUi(){
         this._addServiceUi(this.uiBlock,1);

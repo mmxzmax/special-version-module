@@ -2,104 +2,42 @@ import Promise from 'promise-polyfill';
 
 export default class Helper {
     constructor(){}
-    static getNodes(ignoreNodes){
+    static getNodes(parentNode){
         return new Promise(( resolve, reject ) => {
-            readDom(document.body.querySelectorAll('*')).then(nodes => {
-                // console.log(nodes);
-                Helper.cleanNodes(nodes,ignoreNodes).then(result => {
-                    resolve(result);
-                });
-            })
-        });
-        function toArr(collection){
-            let arr=[];
-            for(let i=0;i<collection.childNodes.length;i++){
-                arr.push(collection.childNodes[i]);
-            }
-            return arr;
-        }
-        function readDom(collection){
-            return new Promise((resolve, reject) => {
-                let textNodes=[];
-                const nodesLength = collection.length;
-                // console.log('nodesLength',nodesLength);
-                let iterrator = 0;
-                let i = 0;
-                const timer = setInterval(()=>{
-                    for (i = iterrator; i < iterrator + 10 ; i++) {//добавляем элементы dom к массиву
-                        let elem=collection[i];
-                        if(i<nodesLength){
-                            // console.log('processed:'+(i+1)+' of '+nodesLength+ ' body child nodes');
-                            textNodes.push(elem);
-                        }
+            const PARENTNODE = parentNode? parentNode : document.body;
+            try {
+                const NODEITERATOR = document.createNodeIterator(
+                    PARENTNODE,
+                    NodeFilter.SHOW_TEXT, node => {
+                        return node.wholeText ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
                     }
-                    if(iterrator < nodesLength){
-                        iterrator = i;
-                    } else {
-                        clearInterval(timer);
-                        resolve(textNodes);
-                    }
-                },10)
-            })
-        }
-
-    }
-    static cleanNodes(nodes,ignoreNodes){
-        let ignore = ignoreNodes? ignoreNodes :  [];
-        ignore.push('script');
-        ignore.push('#text');
-        ignore.push('#comment');
-        ignore.push('img');
-        ignore.push('svg');
-        ignore.push('use');
-        ignore.push('noscript');
-        ignore.push('br');
-        ignore.push('hr');
-        ignore.push('ymaps');
-        return new Promise((resolve, reject) => {
-            let iterrator = 0;
-            let i = 0;
-
-            if(!nodes){
-                reject();
-            }
-
-            const timer = setInterval(()=>{
-                for (i = iterrator; i < iterrator + 10 ; i++) {//добавляем элементы dom к массиву
-                    if(i<nodes.length){
-                        let elem = null;
-                        try{
-                            elem = nodes[i];
-                        }
-                        catch (e) {}
-                        for(let j = 0; j<ignore.length;j++){
-                            if(elem){
-                                if(String(elem.nodeName).toLowerCase()===ignore[j]){
-                                    try{
-                                        elem.classList.add('special-version__ignore');
-                                    } catch (e) {}
-                                    try {
-                                        nodes.splice(i, 1);
-                                        i--;
-                                    } catch (e) {
-                                        reject();
-                                        break;
-                                    }
-                                }
+                );
+                const NODES = [];
+                const ITERATORTIMER = setInterval(()=>{
+                    const currentNode = NODEITERATOR.nextNode();
+                    if(currentNode){
+                        if(currentNode.parentNode !== PARENTNODE){
+                            if(String(currentNode.wholeText).replace(/\s/g, '').length){
+                                NODES.push(currentNode.parentNode);
                             }
-
                         }
+                    } else {
+                        clearInterval(ITERATORTIMER);
+                        resolve(NODES);
                     }
-                }
-                if(iterrator < nodes.length
-                ){
-                    iterrator = i;
-                } else {
-                    clearInterval(timer);
-                    resolve(nodes);
-                }
-            },10);
+                },1);
+            } catch (e) {
+                reject(e);
+            }
         });
+    }
+    static createUiBlock(){
+        const position = document.body.firstChild;
+        const uiBlock = document.createElement('div');
+        uiBlock.classList.add('special-version');
+        uiBlock.classList.add('special-version__ignore');
+        document.body.insertBefore(uiBlock,position);
+        return uiBlock;
     }
     static getStyle(element){
         return  window.getComputedStyle(element, null) || element.currentStyle;

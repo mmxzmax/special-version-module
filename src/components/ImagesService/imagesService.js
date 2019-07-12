@@ -7,18 +7,18 @@ export default class ImagesService extends Module{
     }
     init(){
         this.nodes = [];
-        const img =ImagesService._findImages();
-        const bgImg =this._findBgImages();
-        const svg = ImagesService._findSvgImg();
+        const img =ImagesService.findImages();
+        const bgImg =ImagesService.findBgImages();
+        const svg = ImagesService.findSvgImg();
         this._cacheBlocks(img);
         this._cacheBlocks(bgImg);
         this._cacheBlocks(svg);
     }
-    static _findImages(){
+    static findImages(){
         return document.getElementsByTagName("img");
     }
-    _findBgImages(){
-        let imgNodes = this.textNodes;
+    static findBgImages(){
+        let imgNodes = document.querySelectorAll('*');
         let resultArr = [];
         for(let i=0;i<imgNodes.length;i++){
             const element = imgNodes[i];
@@ -30,7 +30,7 @@ export default class ImagesService extends Module{
         }
         return resultArr;
     }
-    static _findSvgImg(){
+    static findSvgImg(){
         return document.getElementsByTagName("svg");
     }
     _cacheBlocks(elemets){
