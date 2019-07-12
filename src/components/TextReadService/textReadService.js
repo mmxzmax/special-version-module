@@ -1,4 +1,5 @@
 import Module from './../module/module';
+import TtsService from './TtsService';
 
 
 
@@ -8,94 +9,137 @@ export default class PluginSpeechSystem extends Module{
         this.button = '';
         this.enabled = (this.value === 'on');
         this.voice = {};
-        this.hasLang = false;
+        this.voice.name = undefined;
         this.hasSpeech = false;
+        this.msg = null;
+        this.synth = null;
+        this.progress = 0;
+        this.hasSpeech = true;
+        this.isNativeApi = false;
         if('speechSynthesis' in window) {
-
-            this.hasSpeech = true;
-
-            window.addEventListener('load',() => {
-                this.getvoices();
-            },false);
-            window.speechSynthesis.onvoiceschanged = () => {
-                this.getvoices();
-            };
+            this.isNativeApi = true;
+            this.synth = window.speechSynthesis;
+            this.initService();
+        } else {
+          console.log(this.settings);
+            this.synth = new TtsService(
+              this.settings.api,
+              this.settings.lngCode,
+              this.settings.lngCodes);
         }
     }
-    initReadNodes(){
-
+    initService(){
+      const SELF = this;
+      const TIMER = setInterval(()=>{
+        if(!SELF.msg){
+          SELF.msg = SELF.getvoices();
+        } else {
+          clearInterval(TIMER);
+        }
+      },250);
+    }
+    getvoices(){
+      const VOICES = this.synth.getVoices();
+      for(let i = 0; i < VOICES.length ; i++) {
+        const LANG = new RegExp(this.settings.lngCode,'g');
+        const VOICE = VOICES[i];
+        if(LANG.test(VOICE.lang)){
+          this.voice.name = VOICE.name;
+          break;
+        }
+      }
+      const MSG = new window.SpeechSynthesisUtterance();
+      MSG.voice = this.synth.getVoices().filter(voice => { return voice.name === this.voice.name; })[0];
+      return MSG;
+    }
+    processNodes(params) {
+      super.processNodes();
+      if(params){
+        if(params === 'on'){
+          this.enabled = (params === 'on');
+        } else {
+          setTimeout(()=>{
+            this.enabled = (params === 'on');
+          },250);
+        }
+      }
+    }
+  initReadNodes(){
+    let TIMER = null;
         document.addEventListener('selectionchange', () => {
+          clearTimeout(TIMER);
+          this.progress = 0;
+          TIMER =setTimeout(()=>{
             this.playText(this.getSelectionHtml());
+          },100);
         });
-
         const buttons = document.querySelectorAll('.js-special-version__button');
-
         for(let i=0;i<buttons.length;i++){
             const currentButton = buttons[i];
             currentButton.addEventListener('click',()=>{
+              clearTimeout(TIMER);
+              this.progress = 0;
                 const text = currentButton.getAttribute('data-read');
-                    this.playText(text);
+                TIMER =setTimeout(()=>{
+                  this.playText(text);
+                },100);
             },false);
-        }
-
-    }
-    getvoices(){
-        const synth = window.speechSynthesis;
-        const voices = synth.getVoices();
-        for(let i = 0; i < voices.length ; i++) {
-            const lang = new RegExp(this.settings.lngCode,'g');
-            if(lang.test(voices[i].lang)){
-                this.hasLang = true;
-                this.voice.name = voices[i].name;
-            }
-        }
-        console.log(this.voice.name);
-        if(!this.hasLang){
-            this.button.style.display = 'none';
         }
     }
     createUi(uiTittle) {
-        if(this.hasSpeech){
-            this.button = super.createUi(uiTittle);
-        }
-        return this.button;
+      if(this.hasSpeech){
+        this.button = super.createUi(uiTittle);
+      }
+      return this.button;
     }
 
     playText(text,callback){
-        let timeoutResumeInfinity;
-        if(this.enabled){
-            window.speechSynthesis.cancel();
-            const msg = new SpeechSynthesisUtterance();
-
-            msg.voice = speechSynthesis.getVoices().filter(voice => { return voice.name === this.voice.name; })[0];
-            msg.text = text;
-            window.speechSynthesis.speak(msg);
-            msg.onstart = function() {
-                resumeInfinity();
-            };
-            msg.onend = function() {
-                clearTimeout(timeoutResumeInfinity);
-                if(callback){
-                    callback();
-                }
-            };
-        }
-        function resumeInfinity() {
-            window.speechSynthesis.resume();
-            timeoutResumeInfinity = setTimeout(resumeInfinity, 1000);
-        }
-
+      if(this.isNativeApi){
+        this.playNative(text,callback);
+      } else {
+        this.playByTts(text,callback);
+      }
     }
-    callback(param) {
-        if(param.value === 'on'){
-            this.enabled = true;
-            this.playText(param.buttonAltText);
-        } else {
-            this.playText(param.buttonAltText,() => {
-                this.enabled = (param.value === 'on');
-            });
-        }
+
+    playNative(text,callback){
+      this.msg = this.getvoices();
+      this.progress = 0;
+      this.synth.cancel();
+      const SELF = this;
+      if(this.enabled){
+        this.msg.text = text? text : '';
+        this.synth.speak(this.msg);
+        this.msg.customCallback = callback;
+        this.msg.onend = function() {
+          if(SELF.msg.customCallback){
+            SELF.msg.customCallback();
+          }
+        };
+        const REPEATER = setInterval(function () {
+          console.log(SELF.synth.speaking);
+          if (!SELF.synth.speaking) clearInterval(REPEATER);
+          else SELF.synth.resume();
+        }, 14000);
+      }
+      if(!SELF.msg){
+        const TIMER = setInterval(()=>{
+          if(SELF.msg){
+            SELF.playText(text,callback);
+            clearInterval(TIMER);
+          }
+        },250);
+      }
     }
+
+    playByTts(text,callback){
+      if(this.enabled) {
+        this.synth.play(text);
+        this.synth.player.addEventListener('ended', () => {
+          callback();
+        }, false);
+      }
+    }
+
     getSelectionHtml() {
         let html = "";
         if (typeof window.getSelection != "undefined") {

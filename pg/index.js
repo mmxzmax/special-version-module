@@ -1,50 +1,8 @@
-# special-version-module
-
-## About
+import style from './../src/assets/styles/main.scss';
 
 
-script to include a version for the visually impaired on the site
-
-## Usage
-
-install plugin
-``` bash
-    npm i special-version-module --save
-```
-
-
-
-Add a button that will launch the plug-in for example:
-
-```
-<a href="#" class="js-version">special version on</a>
-```
-
-import module
-
-```javascript
-import SpecialVersion from 'special-version-module';
-
-```
-
-then init the version with button class param
-
-```javascript
-
-const version = new SpecialVersion('.js-version',settings,lng,customCss)
-
-```
- param settings, lng and customCss is not required
-
-add custom settings:
-
-For add custom settings edit default settings and set it by second param of constructor
-
-
-default settings:
-```javascript
-
-[
+import SpecialVersion from './../src/index';
+const version = new SpecialVersion('.js-ver',[
   {
     serviceName:'FontSizeService',
     position: 1,
@@ -263,8 +221,8 @@ default settings:
     params: {
       cacheName: 'speech',
       lngCode:'en',
-      api:'http://api.voicerss.org/?key=<yourApiKey>&hl={{lang}}&c=MP3&src={{text}}', // {{lang}} this literal will be replaced by lang code for current tts {{text}} this literal will be replaced by text to read  
-      lngCodes:[// lang codes for curent tts service
+      api:'http://api.voicerss.org/?key=77ea9a29e07645799e34ee3b99e04456&hl={{lang}}&c=MP3&src={{text}}',
+      lngCodes:[
         "ca-es",
         "zh-cn",
         "zh-hk",
@@ -310,19 +268,4 @@ default settings:
       ]
     }
   }
-]
-
-```
-default lng settings
-```javascript
-   {
-         specialVersionOn: 'special version on',
-         standardVersion: 'special version off',
-         closeAdditional: 'close advanced settings',
-         additionalSettings: 'advanced settings',
-         initText:'special version init'
-}
-
-```
-
-to change styles add cssString to last Attribute of constructor "customCss"
+]);

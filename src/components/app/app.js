@@ -6,19 +6,13 @@ export default class Application {
     constructor(cssString, servicesList, lng, switchButtonElement){
         this._setDocumentStyle(cssString);
         this.servicesList = servicesList? servicesList : [];
-        this.lng = lng? lng : {
-            lngCode: 'ru',
-            specialVersionOn: 'Включаю версию для слабовидящих',
-            standardVersion: 'переходим в обычную версию сайта',
-            closeAdditional: 'Закрыть дополнительные настройки',
-            additionalSettings: 'дополнительные настройки'
-
-        };
+        this.lng = lng;
         const specialVersion = window.localStorage.getItem('specialVersion');
         this.ready = false;
         this.services = {};
         this.addedNodes = [];
         this.watcherTimer = null;
+        document.body.setAttribute('data-version-loading-text',lng.initText? lng.initText: '');
         const specialVersionButton = document.body.querySelectorAll(switchButtonElement? switchButtonElement : '.js-special-version');
         for(let i = 0; i<specialVersionButton.length; i++){
             specialVersionButton[i].addEventListener('click',()=>{
@@ -26,31 +20,11 @@ export default class Application {
                 if(!this.nodes){
                     Helper.getNodes().then(nodes => {
                         this.nodes = nodes;
-                        this.initServices();
-                        if(!this.uiBlock){
-                            this.init();
-                        }
-                        document.body.classList.remove('special-version-loading');
-                        try{
-                            this.services['textReadService'].playText(this.lng.specialVersionOn);
-                        } catch (e) {
-
-                        }
-                        this.watcher();
+                        this.start();
                     });
                 } else {
                     this.ready = false;
-                    this.initServices();
-                    if(!this.uiBlock){
-                        this.init();
-                    }
-                    document.body.classList.remove('special-version-loading');
-                    try{
-                        this.services['textReadService'].playText(this.lng.specialVersionOn);
-                    } catch (e) {
-
-                    }
-                    this.watcher();
+                    this.start();
                 }
             },false);
         }
@@ -58,12 +32,20 @@ export default class Application {
             document.body.classList.add('special-version-loading');
              Helper.getNodes().then(nodes => {
                 this.nodes = nodes;
-                this.initServices();
-                this.init();
-                 document.body.classList.remove('special-version-loading');
-                 this.watcher();
+               this.start();
             });
         }
+    }
+    start(){
+      this.initServices();
+      if(!this.uiBlock){
+        this.init();
+      }
+      document.body.classList.remove('special-version-loading');
+      try{
+        this.services['textReadService'].playText(this.lng.specialVersionOn);
+      } catch (e) {}
+      this.watcher();
     }
     initServices(){
         window.localStorage.setItem('specialVersion','on');
