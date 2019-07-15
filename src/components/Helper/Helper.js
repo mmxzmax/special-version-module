@@ -3,30 +3,33 @@ import Promise from 'promise-polyfill';
 export default class Helper {
     constructor(){}
     static getNodes(parentNode){
+      const PARENTNODE = parentNode? parentNode : document.body;
         return new Promise(( resolve, reject ) => {
-            const PARENTNODE = parentNode? parentNode : document.body;
             try {
-                const NODEITERATOR = document.createNodeIterator(
-                    PARENTNODE,
-                    NodeFilter.SHOW_TEXT, node => {
-                        return node.wholeText ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+              const NODEITERATOR = document.createNodeIterator(
+                PARENTNODE,
+                NodeFilter.SHOW_TEXT, node => {
+                  console.log(node.wholeText);
+                  return node.wholeText ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                }, false
+              );
+              const NODES = [];
+              const ITERATORTIMER = setInterval(()=>{
+                const currentNode = NODEITERATOR.nextNode();
+                if(currentNode){
+                  if(currentNode.parentNode !== PARENTNODE){
+                    if(String(currentNode.wholeText).replace(/\s/g, '').length){
+                      NODES.push(currentNode.parentNode);
                     }
-                );
-                const NODES = [];
-                const ITERATORTIMER = setInterval(()=>{
-                    const currentNode = NODEITERATOR.nextNode();
-                    if(currentNode){
-                        if(currentNode.parentNode !== PARENTNODE){
-                            if(String(currentNode.wholeText).replace(/\s/g, '').length){
-                                NODES.push(currentNode.parentNode);
-                            }
-                        }
-                    } else {
-                        clearInterval(ITERATORTIMER);
-                        resolve(NODES);
-                    }
-                },1);
+                  }
+                } else {
+                  clearInterval(ITERATORTIMER);
+                  console.log(NODES);
+                  resolve(NODES);
+                }
+              },);
             } catch (e) {
+              console.log(e);
                 reject(e);
             }
         });
