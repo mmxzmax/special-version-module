@@ -9,7 +9,6 @@ export default class Helper {
               const NODEITERATOR = document.createNodeIterator(
                 PARENTNODE,
                 NodeFilter.SHOW_TEXT, node => {
-                  console.log(node.wholeText);
                   return node.wholeText ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
                 }, false
               );
@@ -19,12 +18,14 @@ export default class Helper {
                 if(currentNode){
                   if(currentNode.parentNode !== PARENTNODE){
                     if(String(currentNode.wholeText).replace(/\s/g, '').length){
-                      NODES.push(currentNode.parentNode);
+                        let isSVGElement= currentNode.parentNode instanceof SVGElement;
+                        if (!isSVGElement) {
+                            NODES.push(currentNode.parentNode);
+                        }
                     }
                   }
                 } else {
                   clearInterval(ITERATORTIMER);
-                  console.log(NODES);
                   resolve(NODES);
                 }
               },);
@@ -46,13 +47,13 @@ export default class Helper {
         return  window.getComputedStyle(element, null) || element.currentStyle;
     }
     static getCurStyle(elem){
-      const ELEMSTYLE = Helper.getStyle(elem);
+            const ELEMSTYLE = Helper.getStyle(elem);
       const CURRENTFONTSIZE = elem.style.fontSize? elem.style.fontSize : ELEMSTYLE.fontSize;
       const FONTSIZE = CURRENTFONTSIZE? CURRENTFONTSIZE : 14;
       return parseInt(String(FONTSIZE).replace('px',''));
     }
     static setToParent(element,propretyName,value,noDelay){
-        if(element.parentNode!==document.body){
+        if(element.parentNode!==document.body ){
             if(!noDelay){
                 setTimeout(()=> {
                     try{ element.parentNode.style[propretyName] = value;}
