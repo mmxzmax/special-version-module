@@ -1,6 +1,6 @@
 {
   "name": "zakharovji-special-version-module",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "",
   "scripts": {
     "dev": "webpack --mode development",
