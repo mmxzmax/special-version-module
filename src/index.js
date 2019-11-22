@@ -268,11 +268,11 @@ class SpecialVersion {
     ];
 
     const lngSettings = lng? lng :{
-      specialVersionOn: 'special version on',
-      standardVersion: 'special version off',
-      closeAdditional: 'close advanced settings',
-      additionalSettings: 'advanced settings',
-      initText:'special version init'
+      specialVersionOn: 'Версия для слабовидящих включена',
+      standardVersion: 'Версия для слабовидящих выключена',
+      closeAdditional: 'Закрыть дополнительные настройки',
+      additionalSettings: 'Дополнительнын настройки',
+      initText:'Версия для слабовидящих'
     };
     this.connectServiceClasses(serviceList);
     console.log('Application inside init');
