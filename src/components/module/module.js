@@ -10,6 +10,7 @@ export default class SpecialVersionModule {
         this.buttons = [];
         this.init();
         if(this.value){
+            console.log('Initing')
             this.setStyle();
             this.processNodes(this.value);
         }
@@ -29,18 +30,20 @@ export default class SpecialVersionModule {
     }
     init(){}
     processNodes(params){
+        // console.log('Params logged', params);
+        // console.log('LocalStorage logged', window.localStorage.getItem(this.settings.cacheName));
         if(params){
             window.localStorage.setItem(this.settings.cacheName, params);
             try{
                 document.head.appendChild(this.sizeStyes);
             } catch (e) {
-                console.log('no stylesheets');
+                // console.log('no stylesheets');
             }
         } else {
             try{
                 this.sizeStyes = document.head.removeChild(this.sizeStyes);
             } catch (e) {
-                console.log('no stylesheets');
+                // console.log('no stylesheets');
             }
             window.localStorage.removeItem(this.settings.cacheName);
         }

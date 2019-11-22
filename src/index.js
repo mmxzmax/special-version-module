@@ -22,6 +22,8 @@ class SpecialVersion {
       ImagesService,
       PluginSpeechSystem
     ];
+
+    this.app = null;
     const specialVerCss = css;
 
     const serviceList = services? services : [
@@ -273,11 +275,18 @@ class SpecialVersion {
       initText:'special version init'
     };
     this.connectServiceClasses(serviceList);
+    console.log('Application inside init');
     this.init(customCss? customCss : specialVerCss,serviceList,lngSettings,switchButtonElement);
   }
   init(specialVerCss,serviceList,lngSettings,switchButtonElement){
-    const app = new Application(specialVerCss,serviceList,lngSettings,switchButtonElement);
+    console.log('Application outside init');
+    this.app = new Application(specialVerCss,serviceList,lngSettings,switchButtonElement);
   };
+
+  customReset() {
+    console.log('Resenting special version');
+    this.app.reset();
+  }
   connectServiceClasses(settings){
     for(let i=0; i<settings.length; i++){
         const item = settings[i];

@@ -21,6 +21,7 @@ export default class ColorSchemeService extends Module {
         }
     }
     setScheme(id){
+        console.log('Id in setScheme logged', id);
         const self = this;
         setScheme(this.textNodes);
         setScheme(this.textNodes,id);
