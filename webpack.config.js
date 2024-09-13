@@ -7,7 +7,6 @@ const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const ServiceWorkerWebpackPlugin = require( 'serviceworker-webpack-plugin');
 
 
 let plugins = [];
@@ -15,12 +14,10 @@ let page;
 let links = [];
 
 fs.readdirSync('./src/').forEach(file => {
-  if(String(file).endsWith('.pug')){
+  if (String(file).endsWith('.pug')) {
     page = new HtmlWebPackPlugin({
       template: `./src/${path.basename(file, '.pug')}.pug`,
       filename: `./${path.basename(file, '.pug')}.html`,
-      minify: true,
-      hash: true
     });
     links.push({
       link: `./${path.basename(file, '.pug')}.html`,
@@ -31,30 +28,26 @@ fs.readdirSync('./src/').forEach(file => {
 });
 
 plugins.push(
-    new HtmlWebPackPlugin({
-      template: `./src/list-template/${path.basename('list.pug', '.pug')}.pug`,
-      filename: `${path.basename('list.pug', '.pug')}.html`,
-      minify: true,
-      hash: true,
-    })
+  new HtmlWebPackPlugin({
+    template: `./src/list-template/${path.basename('list.pug', '.pug')}.pug`,
+    filename: `${path.basename('list.pug', '.pug')}.html`,
+  })
 );
 plugins.push(new MiniCssExtractPlugin({
   filename: "[name].css",
   chunkFilename: "[id].css"
 }));
 plugins.push(new SpriteLoaderPlugin());
-plugins.push(new SpriteLoaderPlugin(new CopyWebpackPlugin([
-  {from: 'src/public', to: './'}
-])));
+plugins.push(new SpriteLoaderPlugin(new CopyWebpackPlugin({
+  patterns: [
+    { from: 'src/public', to: './' },
+  ],
+})));
 plugins.push(new ImageminPlugin({
   pngquant: {
     quality: '95-100'
   }
 }));
-
-plugins.push( new ServiceWorkerWebpackPlugin({
-  entry: path.join(__dirname, 'src/sw/service-worker.js'),
-}),);
 
 
 
@@ -63,9 +56,7 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: '9900',
-    disableHostCheck: true,
-    open: false,
-    openPage: 'list.html'
+    open: ['/list.html']
   },
   watch: true,
   watchOptions: {
@@ -78,7 +69,12 @@ module.exports = {
         test: /\.js$/,
         exclude: [/node_modules/],
         use: {
-          loader: "babel-loader"
+          loader: "babel-loader",
+          options: {
+            presets: [
+              '@babel/preset-env'
+            ]
+          }
         }
       },
       {
@@ -90,23 +86,7 @@ module.exports = {
       },
       {
         test: /\.pug$/,
-        use: [
-          {
-            loader: "html-loader",
-            options: {
-              attrs: ['img:src', 'link:href', 'image:xlink:href']
-            },
-          },
-          {
-            loader: 'pug-html-loader',
-            query: {
-              data: {
-                linkslist: links,
-              },
-              pretty: true
-            }
-          }
-        ]
+        loader: 'pug-loader',
       },
       {
         test: /\.scss$/,
@@ -116,24 +96,20 @@ module.exports = {
             loader: 'css-loader',
             options: {
               sourceMap: true,
-              minimize: true
             }
           },
           {
             loader: 'postcss-loader',
             options: {
-              plugins: [
-                autoprefixer({
-                  browsers: ['ie >= 9', 'last 8 version']
-                })
-              ],
               sourceMap: true
             }
           },
           {
             loader: 'sass-loader',
             options: {
-              importer: globImporter()
+              sassOptions: {
+                importer: globImporter()
+              }
             }
           }
         ]
@@ -175,7 +151,7 @@ module.exports = {
       {
         test: /\.svg$/,
         use: [
-          {loader: 'svg-sprite-loader', options: {symbolId: filePath => path.basename(filePath, '.svg')}},
+          { loader: 'svg-sprite-loader', options: { symbolId: filePath => path.basename(filePath, '.svg') } },
           'svg-fill-loader',
           'svgo-loader'
         ]
@@ -183,12 +159,12 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ]
+    extensions: ['.tsx', '.ts', '.js']
   },
   plugins: plugins,
   entry: {
-    lib:'./src/index.js',
-    page:'./pg/index.js',
+    lib: './src/index.js',
+    page: './pg/index.js',
   },
   output: {
     path: __dirname + '/dist',

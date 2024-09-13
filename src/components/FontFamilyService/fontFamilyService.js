@@ -52,4 +52,3 @@ export default class FontFamilyService extends Module {
     }
 }
 
-module.exports = FontFamilyService;

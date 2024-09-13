@@ -191,5 +191,3 @@ export default class Application {
 
     }
 }
-
-module.exports = Application;

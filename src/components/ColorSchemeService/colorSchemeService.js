@@ -58,5 +58,3 @@ export default class ColorSchemeService extends Module {
         }
     }
 }
-
-module.exports = ColorSchemeService;

@@ -85,5 +85,3 @@ export default class ImagesService extends Module{
     this.changeImg(params)
   }
 }
-
-module.exports = ImagesService;

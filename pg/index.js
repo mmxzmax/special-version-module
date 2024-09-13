@@ -1,7 +1,7 @@
 import style from './../src/assets/styles/main.scss';
-
-
 import SpecialVersion from './../src/index';
+
+
 const version = new SpecialVersion('.js-ver',[
   {
     serviceName:'FontSizeService',

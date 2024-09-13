@@ -32,5 +32,3 @@ export default class TtsService {
     }
   }
 }
-
-module.exports = TtsService;

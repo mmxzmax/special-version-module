@@ -27,4 +27,3 @@ export default class FontIntervalService extends Module{
     }
 }
 
-module.exports = FontIntervalService;

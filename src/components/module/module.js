@@ -107,5 +107,3 @@ export default class SpecialVersionModule {
         }
     }
 }
-
-module.exports = SpecialVersionModule;
