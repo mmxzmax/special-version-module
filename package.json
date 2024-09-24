@@ -13,6 +13,7 @@
     "type": "git",
     "url": "https://github.com/mmxzmax/special-version-module.git"
   },
+  "bin": "./cli.js",
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -60,7 +61,11 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.25.4",
+    "commander": "^12.1.0",
+    "ejs": "^3.1.10",
+    "inquirer": "^11.0.2",
     "normalize-scss": "^8.0.0",
+    "prettier": "^3.3.3",
     "promise-polyfill": "^8.3.0"
   },
   "main": "dist/lib.bundle.js",
